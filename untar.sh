@@ -10,5 +10,5 @@ if [ "$#" -eq  "1" ]
 	cd ../output
 	ls | grep -v .csv$| xargs rm
 else
-echo "usage: ./untar folder"
+echo "usage: ./untar <target folder>"
 fi
