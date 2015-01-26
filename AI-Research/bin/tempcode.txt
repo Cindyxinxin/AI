@@ -1,0 +1,147 @@
+//							Pattern q = Pattern.compile("(\\d+(.\\d+)?)");
+//							// Pattern q = Pattern.compile("\\d+(?:\\.\\d+)?");
+//							Matcher n = q.matcher(st);
+//							if (n.find()) {
+//								hasNumber = true;
+//								// System.out.println(n.group(0));
+//								System.out.print(n.group() + " ");
+//							}
+//							System.out.println();
+							// using replacing
+							 //st = st.replaceAll("[^0-9]+(.|-)?[^0-9]+", " ");
+							 
+							 
+							 
+							 
+							 
+							 
+							 
+							 
+							 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+class GetNumber {
+	final static File folder = new File(
+			"/home/xin/Documents/AI-Research/part15001-20000");
+	public static int count = 0;
+	public static Set<String> keyword;
+
+	public static void main(String[] args) throws FileNotFoundException {
+		addKey();
+		listFilesForFolder(folder);
+	}
+
+	public static void addKey() {
+		keyword = new HashSet<String>();
+		keyword.add("size");
+		keyword.add("height");
+		keyword.add("length");
+		keyword.add("dimension");
+	}
+
+	public static void listFilesForFolder(final File folder)
+			throws FileNotFoundException {
+		// for every file
+		for (final File fileEntry : folder.listFiles()) {
+			if (fileEntry.isDirectory()) {
+				listFilesForFolder(fileEntry);
+			} else {
+				boolean findHeader = false;
+				// boolean allContainNumber = true;
+				List<Integer> index = new ArrayList<Integer>();
+				List<String> memo = new ArrayList<String>();
+				List<Boolean> allContainNumber = new ArrayList<Boolean>();
+
+				if (fileEntry.isFile() && fileEntry.getName().endsWith(".csv")) {
+					count++;
+					InputStream in = new FileInputStream(fileEntry);
+
+					@SuppressWarnings("resource")
+					Scanner s = new Scanner(in);
+					String header = s.nextLine();
+					String[] tokens = header.split(",");
+					for (int i = 0; i < tokens.length; i++) {
+						for (String key : keyword) {
+							if (tokens[i].toLowerCase().contains(key)) {
+								findHeader = true;
+								index.add(i);
+								// System.out.print(tokens[i] + "\t");
+							}
+						}
+					}
+					// if (findHeader) {
+					// System.out.println();
+					// System.out.println("---------------------------");
+					// }
+					while (s.hasNextLine() && findHeader) {
+						String str = s.nextLine();
+						String[] t = str.split(",");
+						for (int i = 0; i < index.size(); i++) {
+							// for (Integer num : index) {
+							Pattern q = Pattern.compile("(\\d+(.\\d+)?)");
+							Matcher n = q.matcher(t[index.get(i)]);
+							if (n.find()) {
+								memo.add(t[index.get(i)]);
+								allContainNumber.add(i, true);
+							} else {
+								allContainNumber.add(i, false);
+							}
+							// System.out.print(t[num] + "\t");
+						}
+
+						// System.out.println();
+						// for (String st : t) {
+						// Pattern q = Pattern.compile("(\\d+(.\\d+)?)");
+						// // Pattern q = Pattern.compile("\\d+(?:\\.\\d+)?");
+						// Matcher n = q.matcher(st);
+						// if (n.find()) {
+						// hasNumber = true;
+						// // System.out.println(n.group(0));
+						// System.out.print(n.group() + " ");
+						// }
+						// System.out.println();
+						// // using replacing
+						// //st = st.replaceAll("[^0-9]+(.|-)?[^0-9]+", " ");
+						// st.trim();
+						// if (!st.equals(" ")){
+						// hasNumber = true;
+						// //System.out.print(st + " ");
+						// }
+						// }
+					}
+					for (int i = 0; i < index.size(); i++) {
+						if (allContainNumber.get(i)) {
+							System.out
+									.println("------------------------------");
+							System.out.println(tokens[index.get(i)]);
+							System.out
+									.println("------------------------------");
+							for (String item : memo) {
+								System.out.println(item);
+							}
+							// if (findHeader && allContainNumber) {
+							// findHeader = false;
+							// for (String item : memo) {
+							// System.out.println(item);
+							// }
+							System.out.println("file number: " + count);
+							System.out.println("file name: "
+									+ fileEntry.getName());
+							System.out.println();
+						}
+					}
+				}
+			}
+		}
+	}
+}
+							 
