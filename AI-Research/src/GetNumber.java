@@ -14,12 +14,13 @@ import java.util.regex.Pattern;
 
 class GetNumber {
 	final static File folder = new File(
-			"/home/xin/Documents/AI-Research/output");
+			"change to the path of output");
 	public static int count = 0;
 	public static int validCount = 0;
 	public static Set<String> keyword;
 
 	public static void main(String[] args) throws FileNotFoundException {
+		System.out.println(folder);
 		addKey();
 		listFilesForFolder(folder);
 		System.out.println("The percentage of valid file is " + validCount * 1.0 / count);
