@@ -14,13 +14,15 @@ import java.util.regex.Pattern;
 
 class GetNumber {
 	final static File folder = new File(
-			"/home/xin/Documents/AI-Research/part15001-20000");
+			"/home/xin/Documents/AI-Research/output");
 	public static int count = 0;
+	public static int validCount = 0;
 	public static Set<String> keyword;
 
 	public static void main(String[] args) throws FileNotFoundException {
 		addKey();
 		listFilesForFolder(folder);
+		System.out.println("The percentage of valid file is " + validCount * 1.0 / count);
 	}
 
 	public static void addKey() {
@@ -40,9 +42,8 @@ class GetNumber {
 			} else {
 				boolean findHeader = false;
 				List<Integer> index = new ArrayList<Integer>();
-				//List<String> memo = new ArrayList<String>();
 				// key is column number
-				Map<Integer, List<String>> memo = new HashMap<Integer, List<String>>();	
+				Map<Integer, List<String>> memo = new HashMap<Integer, List<String>>();
 				List<Boolean> allContainNumber = new ArrayList<Boolean>();
 
 				if (fileEntry.isFile() && fileEntry.getName().endsWith(".csv")) {
@@ -54,52 +55,67 @@ class GetNumber {
 					String header = s.nextLine();
 					String[] tokens = header.split(",");
 					for (int i = 0; i < tokens.length; i++) {
+						index.add(0);
+						allContainNumber.add(true);
+					}
+					for (int i = 0; i < tokens.length; i++) {
 						for (String key : keyword) {
 							if (tokens[i].toLowerCase().contains(key)) {
 								findHeader = true;
-								index.add(i);
+								index.set(i, 1);
 							}
 						}
 					}
+					// when there are input and the file has header
+					// search
 					while (s.hasNextLine() && findHeader) {
 						String str = s.nextLine();
 						String[] t = str.split(",");
-						// check for each column, if all the contents are numbers
-						for (int i = 0; i < index.size(); i++) {
+						// check for each column, if all the contents contains
+						// numbers
+						for (int i = 0; i < tokens.length && i < t.length; i++) {
 							Pattern q = Pattern.compile("(\\d+(.\\d+)?)");
-							Matcher n = q.matcher(t[index.get(i)]);
-							if (n.find()) {
-								if (!memo.containsKey(index.get(i))) {
-									memo.put(index.get(i), new ArrayList<String>());
+							Matcher n = q.matcher(t[i]);
+							if (n.find() && allContainNumber.get(i)) {
+								if (!memo.containsKey(i)) {
+									memo.put(i, new ArrayList<String>());
 								}
-								memo.get(index.get(i)).add(t[index.get(i)]);
-								allContainNumber.add(i, true);
+								memo.get(i).add(t[i]);
 							} else {
-								allContainNumber.add(i, false);
+								allContainNumber.set(i, false);
 							}
 						}
 					}
-					for (int i = 0; i < index.size(); i++) {
-						if (allContainNumber.get(i)) {
+
+					// print the header and the content
+					for (int i = 0; i < tokens.length; i++) {
+						if (allContainNumber.get(i) && index.get(i) == 1) {
 							System.out
 									.println("------------------------------");
-							System.out.println(tokens[index.get(i)]);
+							System.out.println(tokens[i]);
 							System.out
 									.println("------------------------------");
-							for (String item : memo.get(index.get(i))) {
-								System.out.println(item);
-							}
+							if (memo.containsKey(i))
+								for (String item : memo.get(i)) {
+									System.out.println(item);
+								}
 						}
 					}
+					// check again to see if this is a valid file
+					// i.e. if there is a header that has been printed
 					boolean usefulFile = false;
-					for (Boolean useful : allContainNumber) {
-						usefulFile |=  useful;
+					for (int i = 0; i < tokens.length; i++) {
+						if (index.get(i) == 1) {
+							usefulFile |= allContainNumber.get(i);
+						}
 					}
+					// print the file name if it is valid
 					if (usefulFile) {
+						validCount++;
 						System.out.println();
 						System.out.println("file number: " + count);
-						System.out.println("file name: "
-								+ fileEntry.getName());
+						System.out.println("file name: " + fileEntry.getName());
+						System.out.println("this is the " + validCount + " valid file");
 						System.out.println();
 						System.out.println();
 					}
