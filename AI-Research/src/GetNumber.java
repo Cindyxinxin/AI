@@ -1,7 +1,12 @@
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,16 +19,21 @@ import java.util.regex.Pattern;
 
 class GetNumber {
 	final static File folder = new File(
-			"change to the path of output");
+			"/home/xin/Documents/AI-Research/output");
 	public static int count = 0;
 	public static int validCount = 0;
 	public static Set<String> keyword;
+	public static OutputStream out;
+	
 
-	public static void main(String[] args) throws FileNotFoundException {
-		System.out.println(folder);
+	public static void main(String[] args) throws IOException {
+		// System.out.println(folder);
+		out = new FileOutputStream("/home/xin/Documents/AI-Research/output.txt");
 		addKey();
 		listFilesForFolder(folder);
-		System.out.println("The percentage of valid file is " + validCount * 1.0 / count);
+		// System.out.println("The percentage of valid file is " + validCount *
+		// 1.0 / count);
+		out.close();
 	}
 
 	public static void addKey() {
@@ -35,7 +45,7 @@ class GetNumber {
 	}
 
 	public static void listFilesForFolder(final File folder)
-			throws FileNotFoundException {
+			throws IOException {
 		// for every file
 		for (final File fileEntry : folder.listFiles()) {
 			if (fileEntry.isDirectory()) {
@@ -89,19 +99,20 @@ class GetNumber {
 					}
 
 					// print the header and the content
-					for (int i = 0; i < tokens.length; i++) {
-						if (allContainNumber.get(i) && index.get(i) == 1) {
-							System.out
-									.println("------------------------------");
-							System.out.println(tokens[i]);
-							System.out
-									.println("------------------------------");
-							if (memo.containsKey(i))
-								for (String item : memo.get(i)) {
-									System.out.println(item);
-								}
-						}
-					}
+					// for (int i = 0; i < tokens.length; i++) {
+					// if (allContainNumber.get(i) && index.get(i) == 1) {
+					// System.out
+					// .println("------------------------------");
+					// System.out.println(tokens[i]);
+					// System.out
+					// .println("------------------------------");
+					// if (memo.containsKey(i))
+					// for (String item : memo.get(i)) {
+					// System.out.println(item);
+					// }
+					// }
+					// }
+
 					// check again to see if this is a valid file
 					// i.e. if there is a header that has been printed
 					boolean usefulFile = false;
@@ -113,12 +124,16 @@ class GetNumber {
 					// print the file name if it is valid
 					if (usefulFile) {
 						validCount++;
-						System.out.println();
-						System.out.println("file number: " + count);
-						System.out.println("file name: " + fileEntry.getName());
-						System.out.println("this is the " + validCount + " valid file");
-						System.out.println();
-						System.out.println();
+						out.write(fileEntry.getName().getBytes());
+						out.write("\n".getBytes());
+						// System.out.println();
+						// System.out.println("file number: " + count);
+						// System.out.println("file name: " +
+						// fileEntry.getName());
+						// System.out.println("this is the " + validCount +
+						// " valid file");
+						// System.out.println();
+						// System.out.println();
 					}
 				}
 			}
