@@ -50,6 +50,12 @@ class GetNumber {
 		badUnit.add("mb");
 		badUnit.add("mp3");
 		badUnit.add("bit");
+		badUnit.add(":");
+		badUnit.add("-");
+		badUnit.add("kg");
+		badUnit.add("/");
+		badUnit.add("%");
+		badUnit.add("hrs");
 //		 blacklist.addAll(badUnit);
 	}
 
@@ -80,10 +86,10 @@ class GetNumber {
 	public static void listFilesForFolder(final File folder) throws IOException {
 		// check if it is a directory
 		for (final File fileEntry : folder.listFiles()) {
-			System.out.println("count + " + count);
 			if (fileEntry.isDirectory()) {
 				listFilesForFolder(fileEntry);
-			} else {
+			} else if (count < 10000) {
+				// will not 
 				/*
 				 * this is a regular file A file is valid if: 1. Only English
 				 * words (Todo) 2. Has a header line (i.e. has more than two
@@ -127,7 +133,8 @@ class GetNumber {
 					// The header contains at least one keyword and no blacklist
 
 					// contain blacklist word, not valid
-					outerLoop1: for (String blackWord : blacklist) {
+					outerLoop1: 
+					for (String blackWord : blacklist) {
 						for (String head : tokens) {
 							if (head.toLowerCase().contains(blackWord)) {
 								validFile = false;
@@ -145,7 +152,7 @@ class GetNumber {
 									memo.put(i, new ArrayList<String>());
 									memo.get(i).add(tokens[i]);
 								}
-								break;
+//								break;
 							}
 						}
 					}
@@ -219,6 +226,8 @@ class GetNumber {
 					out.write(fileEntry.getName().getBytes());
 					out.write("\n".getBytes());
 				}
+			} else {
+				break;
 			}
 		}
 	}
