@@ -6,9 +6,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Scanner;
 import java.util.Set;
-import number.UnitConverter;
-import number.NumberTranslator;
-import number.TestNumberTranslator;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
@@ -24,31 +21,6 @@ public class ShowContent {
 			"/home/xin/Documents/AI-Research/output.txt");
 
 	public static void main(String[] args) throws IOException {
-		System.out.println(NumberTranslator.translate("3 1/4 inches"));
-//		UnitConverter converter = new UnitConverter("meters");
-		// returns 3250 m
-//		System.out.println(converter.convert(3.25, "km"));
-		// returns -1
-		// System.out.println(converter.convert(3.25, "kb"));
-		/*
-		 * System.out.println(NumberTranslator.translate("3 1/4"));
-		 * System.out.println(NumberTranslator.translate("3 kb"));
-		 * System.out.println(NumberTranslator.translate("3 1/4"));
-		 * System.out.println(NumberTranslator.translate("~ 15"));
-		 * System.out.println(NumberTranslator.translate("~twenty-seven"));
-		 * System.out.println(NumberTranslator.translate("twenty-seven"));
-		 * System
-		 * .out.println(NumberTranslator.translate("eight seven one seven"));
-		 * System.out.println(NumberTranslator.translate("eight to twelve"));
-		 * System.out.println(NumberTranslator .translate(
-		 * "two hundred and seven million thirteen thousand two hundred and ninety eight"
-		 * )); System.out.println(NumberTranslator.translate("2e6"));
-		 * System.out.println(NumberTranslator.translate("1/2"));
-		 * System.out.println(NumberTranslator.translate("2 1/2"));
-		 * System.out.println(NumberTranslator.translate("5,000"));
-		 * System.out.println(NumberTranslator.translate("6-10"));
-		 * System.out.println(NumberTranslator.translate("15mm"));
-		 */
 		listFilesForFolder(folder);
 		out.close();
 	}
@@ -72,7 +44,6 @@ public class ShowContent {
 		@SuppressWarnings("resource")
 		Scanner s = new Scanner(file);
 		while (s.hasNextLine()) {
-			// out.write(s.nextLine().getBytes());
 			out.write(StringEscapeUtils.unescapeHtml(s.nextLine()).getBytes());
 			out.write("\n".getBytes());
 		}
